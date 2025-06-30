@@ -100,7 +100,7 @@ button:disabled {
     overflow-wrap: break-word;
     word-wrap: break-word;
     height: auto;
-    max-height: none;
+    max-height: 500px;
     border: 1px solid var(--border-color);
     color: var(--text-color);
 }
