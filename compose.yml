@@ -1,25 +1,15 @@
 services:
   ollama:
-    image: ollama/ollama:latest
+    build:
+      context: ./ollama
+      dockerfile: Dockerfile
     container_name: ollama_c
-    ports:
-      - "11434:11434"
-    # Pull the model then start daemon
-    command: ["sh", "-c", "ollama pull deepseek-r1:1.5b && ollama daemon"]
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:11434/v1/models"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   server:
     build:
       context: ./server
       dockerfile: Dockerfile
     container_name: server_c
-    depends_on:
-      ollama:
-        condition: service_healthy
     ports:
       - "8000:8000"
     volumes:
@@ -30,10 +20,10 @@ services:
       context: ./client
       dockerfile: Dockerfile
     container_name: client_c
+    depends_on:
+      - server
     ports:
       - "5173:5173"
     volumes:
       - ./client:/app
       - /app/node_modules
-    depends_on:
-      - server
